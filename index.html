@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>SureTix 供应商端 · 交互原型</title>
+<style>
+:root{
+  --pink:#E5477B; --pink-l:#FF6FA5; --grad:linear-gradient(135deg,#E5477B 0%,#FF6FA5 100%);
+  --jade:#2FBE8F; --orange:#FF8A5A; --red:#e5484d;
+  --ink:#1a1a20; --gray:#9a9aa4; --gray2:#c4c4cc; --line:#eeeef1; --bg:#f7f7f9; --card:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  background:#e6e6ec;color:var(--ink);display:flex;justify-content:center;padding:34px 16px 70px}
+.serif{font-family:"Noto Serif SC",serif;font-weight:700}
+.phone{width:390px;height:844px;background:var(--bg);border-radius:46px;
+  box-shadow:0 14px 44px rgba(0,0,0,.22);overflow:hidden;position:relative;border:9px solid #0c0c0e}
+.scr{position:absolute;inset:0;display:none;flex-direction:column}
+.scr.on{display:flex}
+.body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.body::-webkit-scrollbar{width:0}
+.sbar{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;flex-shrink:0}
+.sbar.w{color:#fff}
+.sbar .r{display:flex;gap:6px;font-size:11px;align-items:center}
+.hero{background:var(--grad);color:#fff;flex-shrink:0;padding:0 20px 20px}
+.hero .htop{display:flex;align-items:center;gap:10px;padding:2px 0 14px}
+.hero .htop .ttl{font-size:19px;font-weight:700}
+.hero .htop .ic{font-size:19px;cursor:pointer;opacity:.95}
+.hero .htop .sp{margin-left:auto}
+.top{display:flex;align-items:center;gap:12px;padding:12px 20px 13px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--line)}
+.top .back{font-size:24px;cursor:pointer;line-height:1;margin-top:-2px}
+.top .ttl{font-size:17px;font-weight:700}
+.pad{padding:16px 20px}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:13px;box-shadow:0 2px 14px rgba(20,20,40,.05)}
+.card.flat{box-shadow:none;border:1px solid var(--line)}
+.row{display:flex;align-items:center;justify-content:space-between}
+.muted{color:var(--gray);font-size:12.5px}
+.big{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.sec{font-size:14px;font-weight:700;margin:6px 0 11px;display:flex;align-items:center;gap:7px}
+.sec .d{width:4px;height:15px;background:var(--pink);border-radius:2px}
+.sec .more{margin-left:auto;font-size:12px;color:var(--gray);font-weight:400;cursor:pointer}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+.tag.pink{background:rgba(229,71,123,.1);color:var(--pink)}
+.tag.jade{background:rgba(47,190,143,.13);color:#1f9c73}
+.tag.orange{background:rgba(255,138,90,.16);color:#e56a2e}
+.tag.gray{background:#f0f0f4;color:var(--gray)}
+.tag.red{background:rgba(229,72,77,.12);color:var(--red)}
+.btn{display:block;width:100%;background:var(--grad);color:#fff;border:none;border-radius:15px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(229,71,123,.3);font-family:inherit}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink);box-shadow:none}
+.btn.gray{background:#f0f0f4;color:var(--gray);box-shadow:none}
+.btn.sm{padding:11px;font-size:14px;border-radius:12px}
+.tabbar{height:64px;background:#fff;border-top:1px solid var(--line);display:flex;flex-shrink:0;padding-bottom:6px}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--gray2);font-size:11px}
+.tabbar .tb.on{color:var(--pink)}
+.tabbar .tb .ic{font-size:20px}
+.field{margin-bottom:16px}
+.field>label{font-size:13px;color:var(--gray);display:block;margin-bottom:8px}
+.inp{background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:14px;font-size:15px;width:100%;font-family:inherit;color:var(--ink)}
+.inp.pick{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.stepbar{display:flex;gap:5px;padding:14px 20px 4px;background:#fff}
+.stepbar .s{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.stepbar .s.on{background:var(--pink)}
+.stepper{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:13px;overflow:hidden;width:150px}
+.stepper b{width:48px;height:50px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;color:var(--pink);user-select:none}
+.stepper span{flex:1;text-align:center;font-size:16px;font-weight:600}
+.payout{background:rgba(229,71,123,.06);border:1px dashed var(--pink);border-radius:13px;padding:15px 16px;margin-bottom:16px}
+.seg{display:flex;gap:11px}
+.seg .o{flex:1;border:1.5px solid var(--line);border-radius:13px;padding:14px 10px;text-align:center;cursor:pointer;background:#fff}
+.seg .o.on{border-color:var(--pink);background:rgba(229,71,123,.05)}
+.seg .o .t{font-weight:700;font-size:14px}
+.seg .o.on .t{color:var(--pink)}
+.seg .o .d{font-size:10.5px;color:var(--gray);margin-top:4px;line-height:1.35}
+.wf{column-count:2;column-gap:11px}
+.tk{break-inside:avoid;background:#fff;border-radius:14px;padding:13px;margin-bottom:11px;box-shadow:0 2px 12px rgba(20,20,40,.05);border-top:3px solid var(--pink)}
+.tk.g{border-top-color:var(--gray2)}
+.tk .nm{font-weight:700;font-size:13.5px;line-height:1.35;margin-bottom:7px}
+.tk .pr{color:var(--pink);font-weight:800;font-size:16px}
+.tk .qt{font-size:11.5px;color:var(--gray);margin-top:3px}
+.oi{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 2px 14px rgba(20,20,40,.05);border-left:4px solid var(--line);cursor:pointer}
+.oi.blue{border-left-color:#3d7ea6}.oi.wait{border-left-color:var(--pink)}
+.oi.risk{border-left-color:var(--orange)}.oi.after{border-left-color:var(--jade)}
+.list .it{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.list .it:last-child{border:none}
+.list .it .l{display:flex;align-items:center;gap:12px}
+.list .it .l .ico{font-size:17px;width:22px;text-align:center}
+.stepflow{padding-left:4px}
+.sf{display:flex;gap:12px;position:relative;padding-bottom:19px}
+.sf::before{content:'';position:absolute;left:8px;top:19px;bottom:-1px;width:2px;background:var(--line)}
+.sf:last-child::before{display:none}
+.sf .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);background:#fff;flex-shrink:0;margin-top:1px;z-index:1}
+.sf.done .dot{background:var(--jade);border-color:var(--jade)}
+.sf.cur .dot{background:var(--pink);border-color:var(--pink);box-shadow:0 0 0 4px rgba(229,71,123,.15)}
+.sf .txt{font-size:14px}.sf .txt .s{font-size:11.5px;color:var(--gray)}
+.sf.todo .txt{color:var(--gray2)}
+.mask{position:absolute;inset:0;background:rgba(0,0,0,.42);display:none;align-items:flex-end;z-index:40}
+.mask.on{display:flex}
+.sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:8px 20px 30px;animation:up .25s}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:38px;height:4px;background:var(--line);border-radius:2px;margin:8px auto 15px}
+.opt{padding:14px 4px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
+.opt:last-child{border:none}
+.kv{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-of-type{border:none}.kv .v{font-weight:700}.kv .v.red{color:var(--pink)}
+.qb{position:absolute;top:9px;left:9px;background:#111;color:#fff;font-size:9px;padding:2px 7px;border-radius:5px;opacity:.4;z-index:50}
+.toast{position:absolute;top:64px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.82);color:#fff;padding:10px 20px;border-radius:22px;font-size:13px;z-index:60;display:none}
+.toast.on{display:block;animation:fade 2.2s}
+@keyframes fade{0%,100%{opacity:0}12%,82%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+  <div class="toast" id="toast"></div>
+  <span class="qb">供应商端原型</span>
+
+  <!-- ===== 登录 ===== -->
+  <div class="scr on" id="login">
+    <div style="flex:1;background:var(--grad);display:flex;flex-direction:column">
+      <div class="sbar w"><span>9:41</span><span class="r">●●● 5G ▮</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;text-align:center">
+        <div style="font-size:42px;margin-bottom:14px">🎫</div>
+        <div class="serif" style="font-size:30px">稳飞商家</div>
+        <div style="font-size:13px;opacity:.85;margin-top:6px">供应商票务工作台</div>
+      </div>
+    </div>
+    <div style="background:#fff;padding:30px 24px 40px;border-radius:28px 28px 0 0;margin-top:-26px">
+      <div class="field"><label>手机号</label><div class="inp">138 **** 6688</div></div>
+      <div class="field"><label>验证码</label><div class="inp" style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--gray)">请输入验证码</span><span style="color:var(--pink);font-size:13px;font-weight:600">获取验证码</span></div></div>
+      <button class="btn" onclick="go('home')" style="margin-top:6px">登 录</button>
+      <div class="muted" style="text-align:center;margin-top:16px;line-height:1.7">邀请制账号，由平台运营开通<br>资质审核已在入驻时完成</div>
+    </div>
+  </div>
+
+  <!-- ===== 1 首页：库存管理 ===== -->
+  <div class="scr" id="home">
+    <div class="hero">
+      <div class="sbar w"><span>9:41</span><span class="r">●●● 5G ▮</span></div>
+      <div class="htop"><span class="ttl serif">库存管理</span><span class="sp"></span><span class="ic" onclick="toast('风险订单1笔 · 金额到账¥468')">🔔</span></div>
+      <div class="row" style="align-items:flex-end">
+        <div><div style="font-size:12px;opacity:.85">稳定供应商 · 额度 80%</div><div style="font-size:13px;opacity:.9;margin-top:3px">在售 12 · 已售 38 · 履约率 98%</div></div>
+      </div>
+    </div>
+    <div class="body pad">
+
+      <!-- 1.1 已上传票状态 -->
+      <div class="card">
+        <div class="row" style="text-align:center">
+          <div style="flex:1"><div class="big" style="font-size:22px;color:var(--gray)">6</div><div class="muted">待售</div></div>
+          <div style="flex:1;border-left:1px solid var(--line)"><div class="big" style="font-size:22px;color:var(--orange)">3</div><div class="muted">待审</div></div>
+          <div style="flex:1;border-left:1px solid var(--line)"><div class="big" style="font-size:22px;color:var(--pink)">12</div><div class="muted">在售</div></div>
+          <div style="flex:1;border-left:1px solid var(--line)"><div class="big" style="font-size:22px;color:var(--jade)">38</div><div class="muted">已售</div></div>
+        </div>
+      </div>
+
+      <!-- 1.2 库存瀑布流 · 按时间轴分组（临期在前）-->
+      <div class="sec"><span class="d"></span>本周开演 <span class="tag orange" style="margin-left:6px">临期</span></div>
+      <div class="wf" id="wf-list">
+        <div class="tk"><div class="nm">周深·深圳 内场A区</div><div class="pr">¥520</div><div class="qt">10-15 · 现票 · 在售4</div></div>
+        <div class="tk"><div class="nm">周深·深圳 看台B</div><div class="pr">¥360</div><div class="qt">10-15 · 现票 · 在售6</div></div>
+      </div>
+      <div class="sec"><span class="d"></span>本月开演</div>
+      <div class="wf">
+        <div class="tk"><div class="nm">陈奕迅·香港 看台</div><div class="pr">¥880</div><div class="qt">10-28 · 担保 · 在售2</div></div>
+        <div class="tk g"><div class="nm">陈奕迅·香港 内场</div><div class="pr">¥1280</div><div class="qt">10-28 · 待审2</div></div>
+      </div>
+      <div class="sec"><span class="d"></span>下月及以后</div>
+      <div class="wf">
+        <div class="tk"><div class="nm">林俊杰·广州 VIP</div><div class="pr">¥1980</div><div class="qt">11-20 · 现票 · 待售3</div></div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tb on"><span class="ic">🏠</span>首页</div>
+      <div class="tb" onclick="go('sell1')"><span class="ic">🎫</span>售票</div>
+      <div class="tb" onclick="go('orders')"><span class="ic">📦</span>订单</div>
+      <div class="tb" onclick="go('mine')"><span class="ic">👤</span>我的</div>
+    </div>
+  </div>
+
+  <!-- ===== 2 售票 步骤1：场次/档位/数量/报价（真交互） ===== -->
+  <div class="scr" id="sell1">
+    <div class="top"><span class="back" onclick="go('home')">‹</span><span class="ttl">售票 · 上票</span></div>
+    <div class="stepbar"><span class="s on"></span><span class="s"></span><span class="s"></span></div>
+    <div class="body pad">
+      <div class="field"><label>演出场次</label><div class="inp pick" onclick="sheet('m-session',true)"><span id="sv-session">周深·深圳站 2026-10-15</span><span style="color:var(--gray2)">›</span></div></div>
+      <div class="field"><label>区域 / 票档</label><div class="inp pick" onclick="sheet('m-tier',true)"><span id="sv-tier">内场 A 区 · ¥380 档</span><span style="color:var(--gray2)">›</span></div></div>
+      <div class="field"><label>数量</label>
+        <div class="stepper"><b onclick="qtyChg(-1)">−</b><span id="sv-qty">4</span><b onclick="qtyChg(1)">＋</b></div>
+      </div>
+      <div class="field"><label>报价（你的卖价 / 张）</label>
+        <input class="inp" type="number" value="520" oninput="priceChg(this.value)" style="font-weight:600">
+      </div>
+      <div class="payout">
+        <div class="row"><span class="muted">预计到手（已扣 10% 佣金）</span><span id="sv-payout" style="font-size:21px;font-weight:800;color:var(--pink)">¥468 / 张</span></div>
+        <div class="row" style="margin-top:6px"><span class="muted" id="sv-total">合计到手 ¥1,872（4张）</span></div>
+        <div class="muted" style="margin-top:6px;line-height:1.5">报价即结算价 · 成交后锁定，市场波动不影响你的到手金额</div>
+      </div>
+      <button class="btn" onclick="go('sell2')">下一步：选票源</button>
+    </div>
+  </div>
+
+  <!-- 售票 步骤2：票源类型分叉 -->
+  <div class="scr" id="sell2">
+    <div class="top"><span class="back" onclick="go('sell1')">‹</span><span class="ttl">选择票源类型</span></div>
+    <div class="stepbar"><span class="s on"></span><span class="s on"></span><span class="s"></span></div>
+    <div class="body pad">
+      <div class="seg" id="seg-src" style="margin-bottom:18px">
+        <div class="o on" id="src-hard" onclick="pickSrc('hard')"><div class="t">现票 HARD</div><div class="d">票已在手<br>拍照/选票号提交</div></div>
+        <div class="o" id="src-commit" onclick="pickSrc('commit')"><div class="t">承诺库存</div><div class="d">承诺按期取得<br>用户下单后再传票</div></div>
+      </div>
+
+      <div id="blk-hard">
+        <div class="sec"><span class="d"></span>现票凭证（进全库查重防一票多卖）</div>
+        <div class="field"><label>票号 / 二维码</label><div class="inp">NM-2026-886602</div></div>
+        <div class="field"><label>票面照片</label>
+          <div class="inp pick" style="height:96px;justify-content:center;flex-direction:column;color:var(--gray);border-style:dashed"><div style="font-size:26px">📷</div><div style="font-size:12px;margin-top:4px">拍照 / 从相册选择</div></div>
+        </div>
+        <div class="card flat" style="background:rgba(47,190,143,.05);border-color:rgba(47,190,143,.25)"><div class="muted">ⓘ 现票需先交平台托管，审核验真后才对用户展示「现票」</div></div>
+      </div>
+
+      <div id="blk-commit" style="display:none">
+        <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2)">
+          <div class="muted" style="line-height:1.7"><b style="color:var(--pink)">承诺库存说明</b><br>先挂票、暂不交票。用户下单后你需在「交付截止」前把搞到的票传上来（待传票）。此项需稳定级以上供应商。座位号暂不填。</div>
+        </div>
+        <div class="field" style="margin-top:14px"><label>承诺交付截止（系统按跨境规则自算）</label><div class="inp" style="color:var(--gray)">演出前 · 自动计算 · 不可改</div></div>
+      </div>
+
+      <button class="btn" onclick="go('sell3')" style="margin-top:4px">下一步：交付方式</button>
+    </div>
+  </div>
+
+  <!-- 售票 步骤3：交付方式+风险金+提交 -->
+  <div class="scr" id="sell3">
+    <div class="top"><span class="back" onclick="go('sell2')">‹</span><span class="ttl">交付方式与风险金</span></div>
+    <div class="stepbar"><span class="s on"></span><span class="s on"></span><span class="s on"></span></div>
+    <div class="body pad">
+      <div class="field"><label>交付方式</label><div class="inp pick" onclick="sheet('m-deliv',true)"><span id="sv-deliv">二维码 / 条码</span><span style="color:var(--gray2)">›</span></div></div>
+      <div class="muted" style="margin:-8px 0 18px">此选择决定用户「出票中」持续多久 · 纸质票需更早截止</div>
+      <div class="sec"><span class="d"></span>风险金提交（按最高档预缴）</div>
+      <div class="card flat">
+        <div class="row" style="margin-bottom:9px"><span class="muted">本次上票需预缴风险金</span><span id="sv-deposit" style="font-weight:800;font-size:20px;color:var(--pink)">¥2,600</span></div>
+        <div class="muted" style="line-height:1.7">= 报价 <span id="sv-dep-price">520</span> × 张数 <span id="sv-dep-qty">5</span> × 最高赔付比例 100%<br>先按最坏情况（≤96h 跳票退一赔一）预缴最高档：<br>· 距开演 >96h 跳票 → 实扣 40%，余额退回<br>· 距开演 ≤96h 跳票 → 实扣 100%<br>· 未跳票 → 演出后 48h 无投诉全额释放</div>
+      </div>
+      <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2)">
+        <div class="muted" style="line-height:1.7"><b style="color:var(--pink)">⚠ 跳票赔付说明</b><br>若无法交付，赔付含用户票款 + 已产生的酒店住宿损失（单笔上限约定值），从风险金/结算款扣除。上票即视为同意本条款。</div>
+      </div>
+      <button class="btn" onclick="sheet('m-submit',true)">提交待审核</button>
+    </div>
+  </div>
+
+  <!-- ===== 3 订单 ===== -->
+  <div class="scr" id="orders">
+    <div class="hero" style="padding-bottom:18px">
+      <div class="sbar w"><span>9:41</span><span class="r">●●● 5G ▮</span></div>
+      <div class="htop"><span class="ttl serif">订单</span></div>
+      <div style="background:rgba(255,255,255,.16);border-radius:14px;padding:14px 16px">
+        <div style="font-size:12px;opacity:.9">预计票务收入（未结算订单合计）</div>
+        <div class="big serif" style="margin-top:2px">¥ 24,680</div>
+      </div>
+    </div>
+    <div class="body pad">
+      <div class="oi risk" onclick="go('odetail')">
+        <div class="row" style="margin-bottom:7px"><span style="font-weight:700">周深·深圳站 内场A区</span><span class="tag orange">⚠ 风险提示</span></div>
+        <div class="row"><span class="muted">承诺票 · 待传票 · ¥880×1</span><span style="color:#e56a2e;font-size:12px">明天18:00截止 ›</span></div>
+      </div>
+      <div class="oi blue">
+        <div class="row" style="margin-bottom:7px"><span style="font-weight:700">陈奕迅·香港站 看台</span><span class="tag pink">用户已购·待交付</span></div>
+        <div class="row"><span class="muted">现票 · ¥880×2</span><span style="color:var(--gray2);font-size:12px">›</span></div>
+      </div>
+      <div class="oi wait">
+        <div class="row" style="margin-bottom:7px"><span style="font-weight:700">林俊杰·广州站 内场</span><span class="tag gray">承诺票·待传票</span></div>
+        <div class="row"><span class="muted">用户已下单，待你上传票 · ¥600×3</span><span style="color:var(--gray2);font-size:12px">›</span></div>
+      </div>
+      <div class="oi after">
+        <div class="row" style="margin-bottom:7px"><span style="font-weight:700">薛之谦·深圳站 看台</span><span class="tag jade">售后结算中</span></div>
+        <div class="row"><span class="muted">已完成 · ¥720×2 · 48h后释放</span><span style="color:var(--gray2);font-size:12px">›</span></div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb" onclick="go('home')"><span class="ic">🏠</span>首页</div>
+      <div class="tb" onclick="go('sell1')"><span class="ic">🎫</span>售票</div>
+      <div class="tb on"><span class="ic">📦</span>订单</div>
+      <div class="tb" onclick="go('mine')"><span class="ic">👤</span>我的</div>
+    </div>
+  </div>
+
+  <!-- 订单详情：交票链路 -->
+  <div class="scr" id="odetail">
+    <div class="top"><span class="back" onclick="go('orders')">‹</span><span class="ttl">订单详情</span></div>
+    <div class="body pad">
+      <div class="card">
+        <div class="row" style="margin-bottom:8px"><span style="font-weight:700">周深·深圳站 内场A区</span><span class="tag orange">⚠ 风险提示</span></div>
+        <div class="muted">订单 #88012 · ¥880 × 1 · 承诺票</div>
+        <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><span style="color:#e56a2e;font-weight:600">⏰ 交付截止 明天 18:00</span><span class="muted">临近截止已标红</span></div>
+      </div>
+      <div class="sec"><span class="d"></span>履约状态</div>
+      <div class="card">
+        <div class="stepflow">
+          <div class="sf done"><span class="dot"></span><div class="txt">用户已购·已锁定<span class="s">付款成功，30分钟锁定</span></div></div>
+          <div class="sf done"><span class="dot"></span><div class="txt">你已接单<span class="s">待供应商确认 完成</span></div></div>
+          <div class="sf cur"><span class="dot"></span><div class="txt">待传票<span class="s">当前 · 用户看到「出票中」</span></div></div>
+          <div class="sf todo"><span class="dot"></span><div class="txt">已交票 → 平台验真</div></div>
+          <div class="sf todo"><span class="dot"></span><div class="txt">已交付用户 → 已使用</div></div>
+        </div>
+      </div>
+      <button class="btn" style="margin-bottom:11px" onclick="sheet('m-deliver',true)">上传交付凭证</button>
+      <button class="btn ghost" style="color:var(--red);border-color:var(--red)" onclick="sheet('m-fail',true)">交不出票 · 主动申报</button>
+    </div>
+  </div>
+
+  <!-- ===== 4 我的（抄卖家宝版式）===== -->
+  <div class="scr" id="mine">
+    <div class="hero" style="padding-bottom:22px">
+      <div class="sbar w"><span>9:41</span><span class="r">●●● 5G ▮</span></div>
+      <div class="htop"><span class="ic" onclick="sheet('m-set',true)">⚙</span><span class="sp"></span><span class="ttl">个人中心</span><span class="sp"></span><span class="ic" onclick="toast('风险订单1笔 · ¥468已到账')">🔔</span></div>
+    </div>
+    <div class="body" style="margin-top:-10px">
+      <div class="pad" style="padding-top:0">
+        <div class="card" style="margin-top:-14px">
+          <div class="row" style="padding-bottom:14px;border-bottom:1px dashed var(--line)">
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:50px;height:50px;background:#f0f0f4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px">🎫</div><div><div style="font-weight:700;font-size:16px">稳飞票务（深圳）</div><div class="muted">稳定供应商 · 双证已认证 👑</div></div></div>
+          </div>
+          <div class="row" style="text-align:center;padding-top:14px">
+            <div style="flex:1"><div class="big" style="font-size:23px">¥5,000</div><div class="muted">风险金</div></div>
+            <div style="flex:1;border-left:1px solid var(--line)"><div class="big" style="font-size:23px;color:var(--pink)">¥8,600</div><div class="muted">账户金额（待收款）</div></div>
+          </div>
+        </div>
+
+        <div class="card list" style="padding:0">
+          <div class="it"><div class="l"><span class="ico">📜</span>历史订单记录</div><span style="color:var(--gray2)">›</span></div>
+          <div class="it"><div class="l"><span class="ico">⚖️</span>违约记录</div><span class="muted">0 次 ›</span></div>
+          <div class="it"><div class="l"><span class="ico">📋</span>资质信息管理</div><span class="tag jade">双证有效</span></div>
+          <div class="it"><div class="l"><span class="ico">🏅</span>风险等级 / 供应商等级</div><span class="muted">稳定 · 80% ›</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb" onclick="go('home')"><span class="ic">🏠</span>首页</div>
+      <div class="tb" onclick="go('sell1')"><span class="ic">🎫</span>售票</div>
+      <div class="tb" onclick="go('orders')"><span class="ic">📦</span>订单</div>
+      <div class="tb on"><span class="ic">👤</span>我的</div>
+    </div>
+  </div>
+
+  <!-- ===== Sheets ===== -->
+  <div class="mask" id="m-session"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;margin-bottom:6px">选择演出场次</div>
+    <div class="opt" onclick="pickSession('周深·深圳站 2026-10-15')">周深·深圳站 2026-10-15</div>
+    <div class="opt" onclick="pickSession('陈奕迅·香港站 2026-11-02')">陈奕迅·香港站 2026-11-02</div>
+    <div class="opt" onclick="pickSession('林俊杰·广州站 2026-11-20')">林俊杰·广州站 2026-11-20</div>
+  </div></div>
+  <div class="mask" id="m-tier"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;margin-bottom:6px">选择区域 / 票档</div>
+    <div class="opt" onclick="pickTier('内场 A 区',380)">内场 A 区 · ¥380 档</div>
+    <div class="opt" onclick="pickTier('看台 B 区',280)">看台 B 区 · ¥280 档</div>
+    <div class="opt" onclick="pickTier('VIP 区',1280)">VIP 区 · ¥1280 档</div>
+  </div></div>
+  <div class="mask" id="m-deliv"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;margin-bottom:6px">选择交付方式</div>
+    <div class="opt" onclick="document.getElementById('sv-deliv').textContent='纸质票';sheet('m-deliv',false)">纸质票（需更早截止）</div>
+    <div class="opt" onclick="document.getElementById('sv-deliv').textContent='官方电子票转赠';sheet('m-deliv',false)">官方电子票转赠</div>
+    <div class="opt" onclick="document.getElementById('sv-deliv').textContent='二维码 / 条码';sheet('m-deliv',false)">二维码 / 条码</div>
+    <div class="opt" onclick="document.getElementById('sv-deliv').textContent='第三方链接';sheet('m-deliv',false)">第三方链接</div>
+    <div class="opt" onclick="document.getElementById('sv-deliv').textContent='香港现场取票';sheet('m-deliv',false)">香港现场取票</div>
+  </div></div>
+  <div class="mask" id="m-submit"><div class="sheet" style="text-align:center;padding-bottom:34px"><div class="grab"></div>
+    <div style="width:68px;height:68px;background:rgba(47,190,143,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:6px auto 15px">✓</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:6px">已提交，等待平台审核</div>
+    <div class="muted" style="margin-bottom:22px">通过后自动上架，将出现在首页库存「待审」中</div>
+    <button class="btn ghost" onclick="submitTicket()">返回首页看库存</button>
+  </div></div>
+  <div class="mask" id="m-deliver"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;font-size:17px;margin-bottom:14px">上传交付凭证</div>
+    <div class="inp pick" style="height:100px;justify-content:center;flex-direction:column;color:var(--gray);border-style:dashed;margin-bottom:14px"><div style="font-size:26px">📷</div><div style="font-size:12px;margin-top:4px">拍照 / 选择二维码截图</div></div>
+    <div class="muted" style="margin-bottom:16px">ⓘ 仅上传票面截图不等于完成交票，平台将验真</div>
+    <button class="btn" onclick="sheet('m-deliver',false);toast('已提交，平台验真中')">提交验真</button>
+  </div></div>
+  <div class="mask" id="m-fail"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;font-size:17px;color:var(--red)">确认交不出票？</div>
+    <div class="muted" style="margin:6px 0 15px">越早申报，平台补票时间越充裕，扣款越轻</div>
+    <div style="background:var(--bg);border-radius:14px;padding:4px 16px;margin-bottom:16px">
+      <div class="kv"><span>补票成本差价</span><span class="v">¥ 620</span></div>
+      <div class="kv"><span>用户票款赔付</span><span class="v">¥ 880</span></div>
+      <div class="kv"><span>用户酒店损失（封顶）</span><span class="v">¥ 1,000</span></div>
+      <div class="kv"><span>预计扣款合计</span><span class="v red">¥ 2,500</span></div>
+    </div>
+    <div class="muted" style="margin-bottom:15px">从风险金 + 结算款扣除，不足则追偿。多次违约将降级/拉黑。</div>
+    <button class="btn" style="background:var(--red);box-shadow:none" onclick="sheet('m-fail',false);toast('已申报，平台启动补票')">确认申报</button>
+    <button class="btn gray sm" style="margin-top:10px" onclick="sheet('m-fail',false)">再想想</button>
+  </div></div>
+  <div class="mask" id="m-set"><div class="sheet"><div class="grab"></div>
+    <div style="font-weight:700;margin-bottom:6px">设置</div>
+    <div class="opt" onclick="sheet('m-set',false);toast('意见反馈')">意见反馈</div>
+    <div class="opt" onclick="sheet('m-set',false)">版本号　<span class="muted">v1.0.0</span></div>
+    <div class="opt" style="color:var(--red)" onclick="sheet('m-set',false);go('login')">退出登录</div>
+  </div></div>
+
+<script>
+const P={fee:0.10};
+function $(id){return document.getElementById(id)}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.remove('on');void t.offsetWidth;t.classList.add('on')}
+function go(id){document.querySelectorAll('#app .scr').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');var b=$(id).querySelector('.body');if(b)b.scrollTop=0}
+function sheet(id,on){$(id).classList.toggle('on',on)}
+const SELL={session:'周深·深圳站 2026-10-15',tier:'内场 A 区',face:380,qty:4,price:520,source:'hard'};
+function calc(){var po=Math.round(SELL.price*(1-P.fee));
+  $('sv-qty').textContent=SELL.qty;$('sv-payout').textContent='¥'+po+' / 张';
+  $('sv-total').textContent='合计到手 ¥'+(po*SELL.qty).toLocaleString()+'（'+SELL.qty+'张）';
+  var dep=SELL.price*SELL.qty;
+  if($('sv-deposit')){$('sv-deposit').textContent='¥'+dep.toLocaleString();
+    $('sv-dep-price').textContent=SELL.price;$('sv-dep-qty').textContent=SELL.qty;}}
+function qtyChg(d){SELL.qty=Math.max(1,SELL.qty+d);calc()}
+function priceChg(v){SELL.price=Math.max(0,parseInt(v)||0);calc()}
+function pickSession(s){SELL.session=s;$('sv-session').textContent=s;sheet('m-session',false)}
+function pickTier(t,f){SELL.tier=t;SELL.face=f;$('sv-tier').textContent=t+' · ¥'+f+' 档';sheet('m-tier',false)}
+function pickSrc(s){SELL.source=s;document.querySelectorAll('#seg-src .o').forEach(o=>o.classList.remove('on'));$('src-'+s).classList.add('on');$('blk-hard').style.display=s==='hard'?'block':'none';$('blk-commit').style.display=s==='commit'?'block':'none';}
+function submitTicket(){sheet('m-submit',false);toast('已提交，待审核');go('home');
+  var wf=$('wf-list');if(wf&&!$('tk-new')){var d=document.createElement('div');d.className='tk g';d.id='tk-new';
+  var dt=(SELL.session.match(/\d{4}-(\d{2}-\d{2})/)||[])[1]||'';
+  d.innerHTML='<div class="nm">'+SELL.session.split(' ')[0]+' '+SELL.tier+'</div><div class="pr">¥'+SELL.price+'</div><div class="qt">'+dt+' · 待审 '+SELL.qty+'</div>';
+  wf.insertBefore(d,wf.firstChild);}}
+window.onload=function(){calc()};
+</script>
+</body>
+</html>
