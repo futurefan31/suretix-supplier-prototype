@@ -151,11 +151,12 @@ select.inp{cursor:pointer}
   <!-- ===== 库存管理（首页）===== -->
   <div class="page on" id="pg-home">
     <div class="grid g4">
-      <div class="card stat"><div class="n" style="color:var(--gray)">6</div><div class="l">待售</div></div>
-      <div class="card stat"><div class="n" style="color:var(--orange)">3</div><div class="l">待审</div></div>
-      <div class="card stat"><div class="n" style="color:var(--pink)">12</div><div class="l">在售</div></div>
-      <div class="card stat"><div class="n" style="color:var(--jade)">38</div><div class="l">已售</div></div>
+      <div class="card stat"><div class="n" style="color:var(--gray)">3</div><div class="l">待售<div style="font-size:11px;margin-top:3px">已审核通过，还没挂出去</div></div></div>
+      <div class="card stat"><div class="n" style="color:var(--orange)">2</div><div class="l">待审<div style="font-size:11px;margin-top:3px">已提交，等平台审核</div></div></div>
+      <div class="card stat"><div class="n" style="color:var(--pink)">12</div><div class="l">在售<div style="font-size:11px;margin-top:3px">用户能看到并购买</div></div></div>
+      <div class="card stat"><div class="n" style="color:var(--jade)">2</div><div class="l">已售<div style="font-size:11px;margin-top:3px">已成交，等交票/结算</div></div></div>
     </div>
+    <div class="card flat" style="margin-top:14px"><div class="muted">合计 <b>19 张</b>票 = 待售 3 + 待审 2 + 在售 12 + 已售 2，与下方各场次卡片一一对应</div></div>
 
     <div class="muted" style="margin:20px 0 -6px">💡 点击票卡可改价（仅未成交的票可改，已售出的价格锁定）</div>
 
@@ -199,9 +200,12 @@ select.inp{cursor:pointer}
       </div>
 
       <div class="payout">
-        <div class="row"><span class="muted">预计到手（已扣 10% 佣金）</span><span><span id="sv-payout" style="font-size:24px;font-weight:800;color:var(--pink)">¥468</span><span class="muted"> / 张</span></span></div>
-        <div class="row" style="margin-top:8px"><span class="muted">合计到手</span><span id="sv-total" style="font-weight:700">¥2,340</span></div>
-        <div class="muted" style="margin-top:8px">报价即结算价 · 成交后锁定，市场波动不影响你的到手金额</div>
+        <div class="row"><span class="muted">每张你能拿到</span><span><span id="sv-payout" style="font-size:24px;font-weight:800;color:var(--pink)">¥468</span><span class="muted"> / 张</span></span></div>
+        <div class="row" style="margin-top:8px"><span class="muted">全部卖完总共拿到</span><span id="sv-total" style="font-weight:700">¥2,340</span></div>
+        <div class="muted" style="margin-top:10px;line-height:1.8;padding-top:10px;border-top:1px dashed rgba(229,71,123,.3)">
+          <b>怎么算的</b>：你报价 <span id="sv-exp-p">520</span> 元，平台收 10% 服务费（<span id="sv-exp-f">52</span> 元），剩下 <span id="sv-exp-r">468</span> 元归你。<br>
+          <b>价格会变吗</b>：不会。卖出去那一刻你的到手价就定死了，之后市场涨跌都跟你无关。
+        </div>
       </div>
 
       <div class="field"><label>票源类型</label>
@@ -224,8 +228,15 @@ select.inp{cursor:pointer}
       </div>
 
       <div class="card flat" style="margin-bottom:20px">
-        <div class="row" style="margin-bottom:10px"><span style="font-weight:700">风险金（按最高档预缴）</span><span id="sv-deposit" style="font-size:22px;font-weight:800;color:var(--pink)">¥2,600</span></div>
-        <div class="muted" style="line-height:1.8">= 报价 <span id="sv-dp">520</span> × 张数 <span id="sv-dq">5</span> × 最高赔付比例 100%<br>· 距开演 &gt;96h 跳票 → 实扣 40%，余额退回　· ≤96h 跳票 → 实扣 100%<br>· 未跳票 → 演出后 48h 无投诉全额释放（多退少补）</div>
+        <div class="row" style="margin-bottom:10px"><span style="font-weight:700">这次要先交的风险金</span><span id="sv-deposit" style="font-size:22px;font-weight:800;color:var(--pink)">¥2,600</span></div>
+        <div class="muted" style="line-height:1.9">
+          <b>怎么算的</b>：报价 <span id="sv-dp">520</span> 元 × <span id="sv-dq">5</span> 张 = <span id="sv-dsum">2,600</span> 元。先按"最坏情况"全额押着。<br>
+          <b>什么时候退给你</b>：演出结束 2 天后没人投诉，全额退回。<br>
+          <b>万一你交不出票</b>：<br>
+          　· 离开演还有 <b>4 天以上</b>就告诉平台 → 只扣 4 成，剩下退你<br>
+          　· 离开演 <b>不到 4 天</b>才说 → 全扣（这时平台很难补到票）<br>
+          <span style="color:var(--pink)">早说少扣，晚说多扣，没出问题全退。</span>
+        </div>
       </div>
       <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2);margin-bottom:22px"><div class="muted" style="line-height:1.7"><b style="color:var(--pink)">⚠ 跳票赔付说明</b>：若无法交付，赔付含用户票款 + 已产生的酒店住宿损失（单笔上限约定值），从风险金/结算款扣除。上票即视为同意本条款。</div></div>
 
@@ -244,7 +255,7 @@ select.inp{cursor:pointer}
       <tbody>
         <tr class="click" onclick="nav('odetail')"><td><b>周深·深圳站</b> 内场A区</td><td>承诺票·待传票</td><td>¥880×1</td><td><span class="tag orange">⚠ 风险提示</span></td><td style="color:#e56a2e">明天18:00</td></tr>
         <tr class="click"><td><b>陈奕迅·香港站</b> 看台</td><td>现票</td><td>¥880×2</td><td><span class="tag pink">用户已购·待交付</span></td><td class="muted">—</td></tr>
-        <tr class="click"><td><b>林俊杰·广州站</b> 内场</td><td>承诺票</td><td>¥600×3</td><td><span class="tag gray">承诺票·待传票</span></td><td class="muted">T-5</td></tr>
+        <tr class="click"><td><b>林俊杰·广州站</b> 内场</td><td>承诺票</td><td>¥600×3</td><td><span class="tag gray">承诺票·待传票</span></td><td class="muted">11月18日前</td></tr>
         <tr class="click"><td><b>薛之谦·深圳站</b> 看台</td><td>现票</td><td>¥720×2</td><td><span class="tag jade">售后结算中</span></td><td class="muted">48h后释放</td></tr>
       </tbody>
     </table>
@@ -258,7 +269,8 @@ select.inp{cursor:pointer}
         <div class="card">
           <div class="row" style="margin-bottom:10px"><span style="font-weight:800;font-size:16px">周深·深圳站 内场A区</span><span class="tag orange">⚠ 风险提示</span></div>
           <div class="muted">订单 #88012 · ¥880 × 1 · 承诺票</div>
-          <div class="row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><span style="color:#e56a2e;font-weight:600">⏰ 交付截止 明天 18:00</span><span class="muted">临近截止已标红</span></div>
+          <div class="row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><span style="color:#e56a2e;font-weight:600">⏰ 明天 18:00 前必须交票</span><span class="tag orange">只剩 1 天</span></div>
+          <div class="muted" style="margin-top:8px">超过这个时间还没交，就算你违约，平台会去买票补给用户，差价从你的风险金里扣。</div>
         </div>
         <div class="sec"><span class="d"></span>履约状态（交票链路）</div>
         <div class="card">
@@ -275,10 +287,13 @@ select.inp{cursor:pointer}
           <button class="btn full" style="margin-bottom:12px" onclick="mask('m-deliver',true)">上传交付凭证</button>
           <button class="btn ghost full" style="margin-bottom:12px" onclick="mask('m-scan',true)">📷 现场核销扫码</button>
           <button class="btn ghost full" style="color:var(--red);border-color:var(--red)" onclick="mask('m-fail',true)">交不出票 · 主动申报</button>
-          <div class="muted" style="margin-top:14px;line-height:1.7;padding-top:14px;border-top:1px dashed var(--line)">
-            <b>临期提醒节点</b>（补票时间 R=3天）<br>
-            · 首次确认 T-8　· 预警 T-5　· 冻结新增 T-3.5<br>
-            · 最终交付截止 T-2
+          <div class="muted" style="margin-top:14px;line-height:1.9;padding-top:14px;border-top:1px dashed var(--line)">
+            <b>平台会这样催你交票</b>（以演出日 10月15日 为例）<br>
+            · <b>10月7日</b>　第一次问你：票搞到了吗？<br>
+            · <b>10月10日</b>　还没交 → 发预警，平台开始准备备用票<br>
+            · <b>10月11日</b>　这场不许你再挂新票了<br>
+            · <b>10月13日 18:00</b>　<span style="color:#e56a2e;font-weight:600">最后期限，再不交就算违约</span><br>
+            <span style="font-size:11.5px">为什么是 13 日截止：用户当天入住酒店，酒店提前 1 天才能免费退，再留半天给用户反应时间。</span>
           </div>
         </div>
       </div>
@@ -328,11 +343,12 @@ select.inp{cursor:pointer}
     <div class="grid g3" style="margin-bottom:8px">
       <div class="card stat"><div class="n" style="font-size:24px">¥8,600</div><div class="l">待结算</div></div>
       <div class="card stat"><div class="n" style="font-size:24px;color:var(--jade)">¥12,340</div><div class="l">已到账</div></div>
-      <div class="card stat"><div class="n" style="font-size:24px;color:var(--pink)">10%</div><div class="l">平台佣金（固定）</div></div>
+      <div class="card stat"><div class="n" style="font-size:24px;color:var(--pink)">10%</div><div class="l">平台服务费<div style="font-size:11px;margin-top:3px">固定比例，不会变</div></div></div>
     </div>
-    <div class="card flat" style="margin-bottom:18px"><div class="muted" style="line-height:1.8">
-      <b>结算规则</b>：演出结束后 <b>T+7 个工作日</b>到账（非出票即结算）。<br>
-      到账金额 = 票款 − 平台佣金 10%；同时释放该笔票的风险金（演出后 48h 无投诉）。
+    <div class="card flat" style="margin-bottom:18px"><div class="muted" style="line-height:1.9">
+      <b>钱什么时候到账</b>：不是卖出去就打钱，要等<b>演出结束后 7 个工作日</b>。因为要先确认用户顺利入场、没有投诉。<br>
+      <b>到账多少</b>：票款扣掉 10% 平台服务费，剩下的打给你。比如卖 720 元，扣 72 元，到账 648 元。<br>
+      <b>风险金</b>：演出结束 2 天后没人投诉，那笔票的风险金一起退回。
     </div></div>
     <table class="otable">
       <thead><tr><th>结算单号</th><th>演出</th><th>票款</th><th>佣金 10%</th><th>实收</th><th>状态 / 到账日</th></tr></thead>
@@ -365,14 +381,18 @@ select.inp{cursor:pointer}
 
 <div class="mask" id="m-fail"><div class="modal">
   <div style="font-size:18px;font-weight:700;color:var(--red)">确认交不出票？</div>
-  <div class="muted" style="margin:8px 0 16px">越早申报，平台补票时间越充裕，扣款越轻</div>
-  <div style="background:var(--bg);border-radius:14px;padding:6px 18px;margin-bottom:18px">
-    <div class="kv"><span>补票成本差价</span><span class="v">¥ 620</span></div>
-    <div class="kv"><span>用户票款赔付</span><span class="v">¥ 880</span></div>
-    <div class="kv"><span>用户酒店损失（封顶）</span><span class="v">¥ 1,000</span></div>
-    <div class="kv"><span>预计扣款合计</span><span class="v red">¥ 2,500</span></div>
+  <div class="muted" style="margin:8px 0 16px">现在离开演还有 1 天，属于「晚说」，扣得比较重</div>
+  <div style="background:var(--bg);border-radius:14px;padding:6px 18px;margin-bottom:14px">
+    <div class="kv"><span>平台重新买票的差价</span><span class="v">¥ 620</span></div>
+    <div class="kv"><span>赔给用户的票钱</span><span class="v">¥ 880</span></div>
+    <div class="kv"><span>赔用户白住的酒店</span><span class="v">¥ 1,000</span></div>
+    <div class="kv"><span>你一共要扣</span><span class="v red">¥ 2,500</span></div>
   </div>
-  <div class="muted" style="margin-bottom:18px">从风险金 + 结算款扣除，不足则追偿。多次违约将降级/拉黑。</div>
+  <div class="muted" style="margin-bottom:18px;line-height:1.9">
+    <b>这些钱哪来的</b>：先扣你交的风险金，不够的从待结算款里扣，还不够平台会找你追。<br>
+    <b>为什么要赔酒店</b>：用户是为了看这场演出才订的酒店，票没了酒店就白住了。<br>
+    <b>反复违约会怎样</b>：先降等级、减额度，严重的直接拉黑清退。
+  </div>
   <div style="display:flex;gap:12px"><button class="btn red" style="flex:1" onclick="mask('m-fail',false);toast('已申报，平台启动补票')">确认申报</button><button class="btn ghost" style="flex:1" onclick="mask('m-fail',false)">再想想</button></div>
 </div></div>
 
@@ -401,13 +421,13 @@ select.inp{cursor:pointer}
     <input class="inp" type="number" id="ed-price" value="520" oninput="edCalc()" style="font-weight:600">
   </div>
   <div class="payout" style="margin-bottom:16px">
-    <div class="row"><span class="muted">改后预计到手（扣 10% 佣金）</span><span><span id="ed-payout" style="font-size:22px;font-weight:800;color:var(--pink)">¥468</span><span class="muted"> / 张</span></span></div>
-    <div class="row" style="margin-top:8px"><span class="muted">合计（<span id="ed-qty">4</span> 张）</span><span id="ed-total" style="font-weight:700">¥1,872</span></div>
+    <div class="row"><span class="muted">改完每张能拿到</span><span><span id="ed-payout" style="font-size:22px;font-weight:800;color:var(--pink)">¥468</span><span class="muted"> / 张</span></span></div>
+    <div class="row" style="margin-top:8px"><span class="muted"><span id="ed-qty">4</span> 张总共拿到</span><span id="ed-total" style="font-weight:700">¥1,872</span></div>
   </div>
-  <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2);margin-bottom:18px"><div class="muted" style="line-height:1.7">
-    · 改价<b>立即生效</b>，无需重新审核<br>
-    · C 端售价 = 你的报价 + 平台服务费，<b>同步更新</b><br>
-    · <b>仅未成交的票可改</b>；已售出订单价格锁定
+  <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2);margin-bottom:18px"><div class="muted" style="line-height:1.9">
+    · 改完<b>马上生效</b>，不用等审核<br>
+    · 用户看到的价格会跟着变（你的报价 + 平台服务费）<br>
+    · <b>只能改还没卖出去的票</b>；已经卖掉的，价格不能动
   </div></div>
   <div style="display:flex;gap:12px"><button class="btn" style="flex:1" onclick="saveEdit()">确认改价</button><button class="btn ghost" style="flex:1" onclick="mask('m-edit',false)">取消</button></div>
 </div></div>
@@ -429,7 +449,10 @@ function calc(){var po=Math.round(SELL.price*(1-P.fee)),dep=SELL.price*SELL.qty;
   $('sv-payout').textContent='¥'+po;
   $('sv-total').textContent='¥'+(po*SELL.qty).toLocaleString();
   $('sv-deposit').textContent='¥'+dep.toLocaleString();
-  $('sv-dp').textContent=SELL.price;$('sv-dq').textContent=SELL.qty;}
+  $('sv-dp').textContent=SELL.price;$('sv-dq').textContent=SELL.qty;
+  if($('sv-dsum'))$('sv-dsum').textContent=dep.toLocaleString();
+  if($('sv-exp-p')){$('sv-exp-p').textContent=SELL.price;
+    $('sv-exp-f').textContent=SELL.price-po;$('sv-exp-r').textContent=po;}}
 function qtyChg(d){SELL.qty=Math.max(1,SELL.qty+d);calc()}
 function priceChg(v){SELL.price=Math.max(0,parseInt(v)||0);calc()}
 function pickSrc(s){SELL.source=s;document.querySelectorAll('#seg-src .o').forEach(o=>o.classList.remove('on'));$('src-'+s).classList.add('on');
