@@ -157,21 +157,24 @@ select.inp{cursor:pointer}
       <div class="card stat"><div class="n" style="color:var(--jade)">38</div><div class="l">已售</div></div>
     </div>
 
+    <div class="muted" style="margin:20px 0 -6px">💡 点击票卡可改价（仅未成交的票可改，已售出的价格锁定）</div>
+
     <div class="sec"><span class="d"></span>本周开演 <span class="tag orange" style="margin-left:4px">临期</span><span class="more" onclick="nav('sell')">+ 上票</span></div>
     <div class="tkgrid" id="tkgrid">
-      <div class="tk"><div class="nm">周深·深圳 内场A区</div><div class="pr">¥520</div><div class="qt">10-15 · 现票 · 在售4</div></div>
-      <div class="tk"><div class="nm">周深·深圳 看台B</div><div class="pr">¥360</div><div class="qt">10-15 · 现票 · 在售6</div></div>
+      <div class="tk" style="cursor:pointer" onclick="openEdit('周深·深圳 内场A区',520,4,'在售')"><div class="nm">周深·深圳 内场A区</div><div class="pr">¥520</div><div class="qt">10-15 · 现票 · 在售4</div><div style="font-size:11.5px;color:var(--pink);margin-top:6px">✏️ 改价</div></div>
+      <div class="tk" style="cursor:pointer" onclick="openEdit('周深·深圳 看台B',360,6,'在售')"><div class="nm">周深·深圳 看台B</div><div class="pr">¥360</div><div class="qt">10-15 · 现票 · 在售6</div><div style="font-size:11.5px;color:var(--pink);margin-top:6px">✏️ 改价</div></div>
     </div>
 
     <div class="sec"><span class="d"></span>本月开演</div>
     <div class="tkgrid">
-      <div class="tk"><div class="nm">陈奕迅·香港 看台</div><div class="pr">¥880</div><div class="qt">10-28 · 担保 · 在售2</div></div>
-      <div class="tk g"><div class="nm">陈奕迅·香港 内场</div><div class="pr">¥1280</div><div class="qt">10-28 · 待审2</div></div>
+      <div class="tk" style="cursor:pointer" onclick="openEdit('陈奕迅·香港 看台',880,2,'在售')"><div class="nm">陈奕迅·香港 看台</div><div class="pr">¥880</div><div class="qt">10-28 · 担保 · 在售2</div><div style="font-size:11.5px;color:var(--pink);margin-top:6px">✏️ 改价</div></div>
+      <div class="tk g" style="cursor:pointer" onclick="openEdit('陈奕迅·香港 内场',1280,2,'待审')"><div class="nm">陈奕迅·香港 内场</div><div class="pr">¥1280</div><div class="qt">10-28 · 待审2</div><div style="font-size:11.5px;color:var(--pink);margin-top:6px">✏️ 改价</div></div>
     </div>
 
     <div class="sec"><span class="d"></span>下月及以后</div>
     <div class="tkgrid">
-      <div class="tk"><div class="nm">林俊杰·广州 VIP</div><div class="pr">¥1980</div><div class="qt">11-20 · 现票 · 待售3</div></div>
+      <div class="tk" style="cursor:pointer" onclick="openEdit('林俊杰·广州 VIP',1980,3,'待售')"><div class="nm">林俊杰·广州 VIP</div><div class="pr">¥1980</div><div class="qt">11-20 · 现票 · 待售3</div><div style="font-size:11.5px;color:var(--pink);margin-top:6px">✏️ 改价</div></div>
+      <div class="tk g"><div class="nm">薛之谦·深圳 看台</div><div class="pr">¥720</div><div class="qt">12-06 · 已售2 🔒</div><div style="font-size:11.5px;color:var(--gray2);margin-top:6px">已成交 · 价格锁定</div></div>
     </div>
   </div>
 
@@ -270,7 +273,13 @@ select.inp{cursor:pointer}
         <div class="card">
           <div style="font-weight:700;margin-bottom:14px">操作</div>
           <button class="btn full" style="margin-bottom:12px" onclick="mask('m-deliver',true)">上传交付凭证</button>
+          <button class="btn ghost full" style="margin-bottom:12px" onclick="mask('m-scan',true)">📷 现场核销扫码</button>
           <button class="btn ghost full" style="color:var(--red);border-color:var(--red)" onclick="mask('m-fail',true)">交不出票 · 主动申报</button>
+          <div class="muted" style="margin-top:14px;line-height:1.7;padding-top:14px;border-top:1px dashed var(--line)">
+            <b>临期提醒节点</b>（补票时间 R=3天）<br>
+            · 首次确认 T-8　· 预警 T-5　· 冻结新增 T-3.5<br>
+            · 最终交付截止 T-2
+          </div>
         </div>
       </div>
     </div>
@@ -285,13 +294,23 @@ select.inp{cursor:pointer}
             <div style="display:flex;align-items:center;gap:14px"><div style="width:56px;height:56px;background:#f0f0f4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px">🎫</div><div><div style="font-weight:800;font-size:17px">稳飞票务（深圳）</div><div class="muted">稳定供应商 · 双证已认证 👑</div></div></div>
           </div>
           <div class="grid" style="grid-template-columns:1fr 1fr;text-align:center;padding-top:16px">
-            <div><div class="big" style="font-size:26px">¥5,000</div><div class="muted">风险金</div></div>
-            <div style="border-left:1px solid var(--line)"><div class="big" style="font-size:26px;color:var(--pink)">¥8,600</div><div class="muted">账户金额（待收款）</div></div>
+            <div><div class="big" style="font-size:26px;color:var(--pink)">¥12,340</div><div class="muted">余额（售票所得）</div></div>
+            <div style="border-left:1px solid var(--line)"><div class="big" style="font-size:26px">¥5,000</div><div class="muted">风险金 🔒 只读</div></div>
+          </div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);text-align:center;padding-top:16px;margin-top:16px;border-top:1px solid var(--line)">
+            <div><div style="font-size:17px;font-weight:700">¥8,600</div><div class="muted" style="font-size:12px">待结算</div></div>
+            <div style="border-left:1px solid var(--line)"><div style="font-size:17px;font-weight:700;color:var(--jade)">¥12,340</div><div class="muted" style="font-size:12px">已到账</div></div>
+            <div style="border-left:1px solid var(--line)"><div style="font-size:17px;font-weight:700;color:var(--orange)">¥5,000</div><div class="muted" style="font-size:12px">冻结中</div></div>
+          </div>
+          <div class="muted" style="margin-top:14px;line-height:1.7;padding-top:14px;border-top:1px dashed var(--line)">
+            · <b>余额</b>：售票所得，结算后打入，可查看<br>
+            · <b>风险金</b>：与该笔票交付绑定，上票时提交，<b>不可动用</b>，演出后 48h 无投诉释放
           </div>
         </div>
       </div>
       <div>
         <div class="card list" style="padding:0">
+          <div class="it" onclick="nav('settle')"><div class="l"><span class="ico">💰</span>结算记录</div><span class="muted">演出后 T+7 到账 ›</span></div>
           <div class="it"><div class="l"><span class="ico">📜</span>历史订单记录</div><span style="color:var(--gray2)">›</span></div>
           <div class="it"><div class="l"><span class="ico">⚖️</span>违约记录</div><span class="muted">0 次 ›</span></div>
           <div class="it"><div class="l"><span class="ico">📋</span>资质信息管理</div><span class="tag jade">双证有效</span></div>
@@ -301,6 +320,29 @@ select.inp{cursor:pointer}
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== 结算记录 M3 ===== -->
+  <div class="page" id="pg-settle">
+    <div style="cursor:pointer;color:var(--gray);margin-bottom:16px" onclick="nav('mine')">‹ 返回个人中心</div>
+    <div class="grid g3" style="margin-bottom:8px">
+      <div class="card stat"><div class="n" style="font-size:24px">¥8,600</div><div class="l">待结算</div></div>
+      <div class="card stat"><div class="n" style="font-size:24px;color:var(--jade)">¥12,340</div><div class="l">已到账</div></div>
+      <div class="card stat"><div class="n" style="font-size:24px;color:var(--pink)">10%</div><div class="l">平台佣金（固定）</div></div>
+    </div>
+    <div class="card flat" style="margin-bottom:18px"><div class="muted" style="line-height:1.8">
+      <b>结算规则</b>：演出结束后 <b>T+7 个工作日</b>到账（非出票即结算）。<br>
+      到账金额 = 票款 − 平台佣金 10%；同时释放该笔票的风险金（演出后 48h 无投诉）。
+    </div></div>
+    <table class="otable">
+      <thead><tr><th>结算单号</th><th>演出</th><th>票款</th><th>佣金 10%</th><th>实收</th><th>状态 / 到账日</th></tr></thead>
+      <tbody>
+        <tr><td>ST-26091</td><td>薛之谦·深圳站 看台 ×2</td><td>¥1,440</td><td>−¥144</td><td><b>¥1,296</b></td><td><span class="tag orange">待结算</span> <span class="muted">预计 09-22</span></td></tr>
+        <tr><td>ST-26088</td><td>周深·广州站 内场 ×3</td><td>¥2,400</td><td>−¥240</td><td><b>¥2,160</b></td><td><span class="tag orange">待结算</span> <span class="muted">预计 09-18</span></td></tr>
+        <tr><td>ST-26072</td><td>林俊杰·深圳站 VIP ×2</td><td>¥3,960</td><td>−¥396</td><td><b>¥3,564</b></td><td><span class="tag jade">已到账</span> <span class="muted">09-05</span></td></tr>
+        <tr><td>ST-26065</td><td>陈奕迅·香港站 看台 ×4</td><td>¥3,520</td><td>−¥352</td><td><b>¥3,168</b></td><td><span class="tag jade">已到账</span> <span class="muted">08-28</span></td></tr>
+      </tbody>
+    </table>
   </div>
 
   </div><!-- /wrap -->
@@ -333,6 +375,42 @@ select.inp{cursor:pointer}
   <div class="muted" style="margin-bottom:18px">从风险金 + 结算款扣除，不足则追偿。多次违约将降级/拉黑。</div>
   <div style="display:flex;gap:12px"><button class="btn red" style="flex:1" onclick="mask('m-fail',false);toast('已申报，平台启动补票')">确认申报</button><button class="btn ghost" style="flex:1" onclick="mask('m-fail',false)">再想想</button></div>
 </div></div>
+
+<!-- O5 现场核销扫码 -->
+<div class="mask" id="m-scan"><div class="modal" style="text-align:center">
+  <div style="font-size:18px;font-weight:700;margin-bottom:6px">现场核销</div>
+  <div class="muted" style="margin-bottom:18px">线下当面交票时，扫描用户出示的核销码</div>
+  <div style="background:#111;border-radius:14px;height:220px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:18px">
+    <div style="width:150px;height:150px;border:2px solid rgba(255,255,255,.3);border-radius:12px;position:relative">
+      <div style="position:absolute;top:-2px;left:-2px;width:26px;height:26px;border-top:3px solid var(--pink);border-left:3px solid var(--pink);border-radius:8px 0 0 0"></div>
+      <div style="position:absolute;top:-2px;right:-2px;width:26px;height:26px;border-top:3px solid var(--pink);border-right:3px solid var(--pink);border-radius:0 8px 0 0"></div>
+      <div style="position:absolute;bottom:-2px;left:-2px;width:26px;height:26px;border-bottom:3px solid var(--pink);border-left:3px solid var(--pink);border-radius:0 0 0 8px"></div>
+      <div style="position:absolute;bottom:-2px;right:-2px;width:26px;height:26px;border-bottom:3px solid var(--pink);border-right:3px solid var(--pink);border-radius:0 0 8px 0"></div>
+      <div style="position:absolute;left:8px;right:8px;top:50%;height:2px;background:var(--pink);box-shadow:0 0 8px var(--pink)"></div>
+    </div>
+    <div style="position:absolute;bottom:14px;color:rgba(255,255,255,.5);font-size:12px">将用户核销码对准框内</div>
+  </div>
+  <div style="display:flex;gap:12px"><button class="btn" style="flex:1" onclick="mask('m-scan',false);toast('核销成功 · 用户订单已完成')">模拟扫码成功</button><button class="btn ghost" style="flex:1" onclick="mask('m-scan',false)">关闭</button></div>
+</div></div>
+
+<!-- S8 改价弹窗 -->
+<div class="mask" id="m-edit"><div class="modal">
+  <div style="font-size:18px;font-weight:700;margin-bottom:4px">修改报价</div>
+  <div class="muted" id="ed-nm" style="margin-bottom:18px">周深·深圳 内场A区</div>
+  <div class="field"><label>新报价（你的卖价 / 张）</label>
+    <input class="inp" type="number" id="ed-price" value="520" oninput="edCalc()" style="font-weight:600">
+  </div>
+  <div class="payout" style="margin-bottom:16px">
+    <div class="row"><span class="muted">改后预计到手（扣 10% 佣金）</span><span><span id="ed-payout" style="font-size:22px;font-weight:800;color:var(--pink)">¥468</span><span class="muted"> / 张</span></span></div>
+    <div class="row" style="margin-top:8px"><span class="muted">合计（<span id="ed-qty">4</span> 张）</span><span id="ed-total" style="font-weight:700">¥1,872</span></div>
+  </div>
+  <div class="card flat" style="background:rgba(229,71,123,.04);border-color:rgba(229,71,123,.2);margin-bottom:18px"><div class="muted" style="line-height:1.7">
+    · 改价<b>立即生效</b>，无需重新审核<br>
+    · C 端售价 = 你的报价 + 平台服务费，<b>同步更新</b><br>
+    · <b>仅未成交的票可改</b>；已售出订单价格锁定
+  </div></div>
+  <div style="display:flex;gap:12px"><button class="btn" style="flex:1" onclick="saveEdit()">确认改价</button><button class="btn ghost" style="flex:1" onclick="mask('m-edit',false)">取消</button></div>
+</div></div>
 </body>
 <script>
 const P={fee:0.10};
@@ -341,7 +419,7 @@ function toast(m){var t=$('toast');t.textContent=m;t.classList.remove('on');void
 function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$('pg-'+id).classList.add('on');
   document.querySelectorAll('.side .nav .it').forEach(i=>i.classList.remove('on'));var n=$('nav-'+id);if(n)n.classList.add('on');
-  $('h1').textContent=({home:'库存管理',sell:'售票 · 上票',orders:'订单',mine:'个人中心',odetail:'订单详情'})[id]||'';
+  $('h1').textContent=({home:'库存管理',sell:'售票 · 上票',orders:'订单',mine:'个人中心',odetail:'订单详情',settle:'结算记录'})[id]||'';
   window.scrollTo(0,0);
 }
 function mask(id,on){$(id).classList.toggle('on',on)}
@@ -356,6 +434,20 @@ function qtyChg(d){SELL.qty=Math.max(1,SELL.qty+d);calc()}
 function priceChg(v){SELL.price=Math.max(0,parseInt(v)||0);calc()}
 function pickSrc(s){SELL.source=s;document.querySelectorAll('#seg-src .o').forEach(o=>o.classList.remove('on'));$('src-'+s).classList.add('on');
   $('blk-hard').style.display=s==='hard'?'block':'none';$('blk-commit').style.display=s==='commit'?'block':'none';}
+// S8 改价
+const ED={nm:'',price:0,qty:0,el:null};
+function openEdit(nm,price,qty,st){
+  if(st==='已售'){toast('已成交订单价格锁定，不可改');return}
+  ED.nm=nm;ED.price=price;ED.qty=qty;ED.el=event.currentTarget;
+  $('ed-nm').textContent=nm+' · '+st+qty+'张';
+  $('ed-price').value=price;$('ed-qty').textContent=qty;
+  edCalc();mask('m-edit',true);
+}
+function edCalc(){var p=Math.max(0,parseInt($('ed-price').value)||0),po=Math.round(p*(1-P.fee));
+  $('ed-payout').textContent='¥'+po;$('ed-total').textContent='¥'+(po*ED.qty).toLocaleString();}
+function saveEdit(){var p=Math.max(0,parseInt($('ed-price').value)||0);
+  if(ED.el){var pr=ED.el.querySelector('.pr');if(pr)pr.textContent='¥'+p;}
+  mask('m-edit',false);toast('报价已更新为 ¥'+p+'，C 端售价同步');}
 window.onload=function(){calc()};
 </script>
 </html>
