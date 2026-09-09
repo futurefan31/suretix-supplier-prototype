@@ -448,7 +448,7 @@ select.inp{cursor:pointer}
 <script>
 const P={fee:0.10};
 function $(id){return document.getElementById(id)}
-function toast(m){var t=$('toast');t.textContent=m;t.classList.remove('on');void t.offsetWidth;t.classList.add('on')}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.remove('on');void t.offsetWidth;t.classList.add('on');if(window.__tt)clearTimeout(window.__tt);window.__tt=setTimeout(function(){t.classList.remove('on')},3000)}
 function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$('pg-'+id).classList.add('on');
   document.querySelectorAll('.side .nav .it').forEach(i=>i.classList.remove('on'));var n=$('nav-'+id);if(n)n.classList.add('on');
