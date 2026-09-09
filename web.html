@@ -388,7 +388,7 @@ select.inp{cursor:pointer}
   <div style="font-size:17px;font-weight:700;margin-bottom:14px">到手金额怎么算</div>
   <div class="muted" style="line-height:2">
     <b>算法</b>：你报的价 − 平台服务费 10% = 你到手<br>
-    <b>举例</b>：报价 520 元 → 平台收 52 元 → 你拿 468 元<br><br>
+    <b>按你现在填的算</b>：报价 <b id="sv-exp-p">520</b> 元 → 平台收 <b id="sv-exp-f">52</b> 元 → 你拿 <b style="color:var(--pink)" id="sv-exp-r">468</b> 元<br><br>
     <b>价格会变吗</b>：不会。票卖出去那一刻，你的到手价就锁定了，之后市场涨跌都跟你无关。<br>
     <b>想跟着市场调价</b>：只能改还没卖出去的票，在「库存管理」里点票卡修改。
   </div>
@@ -399,7 +399,7 @@ select.inp{cursor:pointer}
 <div class="mask" id="m-q-dep"><div class="modal">
   <div style="font-size:17px;font-weight:700;margin-bottom:14px">风险金规则</div>
   <div class="muted" style="line-height:2">
-    <b>交多少</b>：报价 × 张数。比如 520 元 × 5 张 = 2,600 元，先按最坏情况全额押着。<br><br>
+    <b>交多少</b>：报价 × 张数。按你现在填的：<b id="sv-dp">520</b> 元 × <b id="sv-dq">5</b> 张 = <b style="color:var(--pink)">¥<span id="sv-dsum">2,600</span></b>，先按最坏情况全额押着。<br><br>
     <b>什么时候退</b>：演出结束 5 天后，确认用户顺利入场、没有投诉，风险金和票款收益<b>一起打给你</b>。<br><br>
     <b>万一交不出票</b><br>
     · 离开演还有 <b>4 天以上</b>就说 → 只扣 4 成，剩下退你<br>
@@ -457,15 +457,14 @@ function nav(id){
 }
 function mask(id,on){$(id).classList.toggle('on',on)}
 const SELL={qty:5,price:520,source:'hard'};
+function set(id,v){var e=$(id);if(e)e.textContent=v}
 function calc(){var po=Math.round(SELL.price*(1-P.fee)),dep=SELL.price*SELL.qty;
-  $('sv-qty').textContent=SELL.qty;
-  $('sv-payout').textContent='¥'+po;
-  $('sv-total').textContent='¥'+(po*SELL.qty).toLocaleString();
-  $('sv-deposit').textContent='¥'+dep.toLocaleString();
-  $('sv-dp').textContent=SELL.price;$('sv-dq').textContent=SELL.qty;
-  if($('sv-dsum'))$('sv-dsum').textContent=dep.toLocaleString();
-  if($('sv-exp-p')){$('sv-exp-p').textContent=SELL.price;
-    $('sv-exp-f').textContent=SELL.price-po;$('sv-exp-r').textContent=po;}}
+  set('sv-qty',SELL.qty);
+  set('sv-payout','¥'+po);
+  set('sv-total','¥'+(po*SELL.qty).toLocaleString());
+  set('sv-deposit','¥'+dep.toLocaleString());
+  set('sv-dp',SELL.price);set('sv-dq',SELL.qty);set('sv-dsum',dep.toLocaleString());
+  set('sv-exp-p',SELL.price);set('sv-exp-f',SELL.price-po);set('sv-exp-r',po);}
 // 多张票号+照片
 let TKN=0;
 function addTkRow(){
