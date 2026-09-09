@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>SureTix 黄牛端 · 功能清单与全流程</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0d0d10;color:#e8e8ec;line-height:1.6;padding:32px 24px 80px}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:26px;margin-bottom:6px}
+.sub{color:#8b8b96;font-size:13px;margin-bottom:28px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;background:#16161c;padding:14px 18px;border-radius:10px;margin-bottom:32px;font-size:12.5px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+h2{font-size:19px;margin:44px 0 4px;padding-left:11px;border-left:4px solid #E5477B}
+h3{font-size:15px;margin:26px 0 8px;color:#c9c9d4}
+.note{color:#8b8b96;font-size:12.5px;margin-bottom:16px;padding-left:15px}
+.flow{display:flex;flex-direction:column;align-items:center;gap:0}
+.box{background:#1c1c24;border:1px solid #2e2e3a;border-radius:9px;padding:12px 18px;min-width:230px;max-width:580px;text-align:center;font-size:13.5px}
+.box .t{font-weight:600;margin-bottom:3px}
+.box .d{color:#9a9aa6;font-size:12px;line-height:1.5}
+.box .id{display:inline-block;background:#2e2e3a;color:#b8b8c4;font-size:10.5px;padding:1px 6px;border-radius:4px;margin-right:5px;vertical-align:1px;font-weight:400}
+.gate{background:#2a1618;border-color:#E24B4B}
+.gate .t{color:#ff8a8a}
+.act{background:#15212a;border-color:#3d7ea6}
+.act .t{color:#7cc4e8}
+.cend{background:#1a2419;border-color:#2FBE8F}
+.cend .t{color:#5fd9ad}
+.arw{width:2px;height:22px;background:#3a3a48;position:relative}
+.arw::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #3a3a48}
+.arw.lbl::before{content:attr(data-l);position:absolute;left:12px;top:1px;font-size:11px;color:#8b8b96;white-space:nowrap}
+.split{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;width:100%}
+.br{display:flex;flex-direction:column;align-items:center;flex:0 1 auto}
+.brt{font-size:11.5px;color:#8b8b96;margin-bottom:7px;padding:2px 9px;background:#22222c;border-radius:11px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px}
+th,td{border:1px solid #2e2e3a;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#22222c;font-weight:600}
+tr:nth-child(even) td{background:#16161c}
+code{background:#22222c;padding:1px 6px;border-radius:4px;font-size:12px;color:#7cc4e8}
+.fml{background:#16161c;border-left:3px solid #E5477B;padding:14px 18px;margin:16px 0;border-radius:6px;font-size:14px;line-height:2.1}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;margin-right:4px}
+.tg-c{background:#1a2419;color:#5fd9ad;border:1px solid #2FBE8F}
+.tg-n{background:#22222c;color:#8b8b96}
+.mvp{color:#5fd9ad;font-weight:600}
+.later{color:#8b8b96}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>SureTix 黄牛端（供应商端）· 功能清单与全流程</h1>
+<div class="sub">四个模块 · MVP 功能编号 · 与 C 端的联动节点</div>
+
+<div class="legend">
+  <span><i style="background:#3d7ea6"></i>商家端操作（黄牛自己动手）</span>
+  <span><i style="background:#2FBE8F"></i>用户端操作 / 用户可见变化</span>
+  <span><i style="background:#E24B4B"></i>系统端审核与处理（含闸门、扣款、通知）</span>
+</div>
+
+<h2>一、MVP 功能清单</h2>
+<div class="note">编号在下方流程图中对应标注。问题编号：A=钱怎么算 · B=票是否真实 · C=违约约束 · D=谁能进来 · E=交付</div>
+<table>
+<tr><th style="width:7%">编号</th><th style="width:15%">模块</th><th style="width:30%">功能</th><th style="width:8%">解决</th><th style="width:8%">MVP</th><th>说明</th></tr>
+
+<tr><td><b>Q1</b></td><td rowspan="4">资质核验</td><td>四步资质上传</td><td>D1</td><td class="mvp">必须</td><td>营业执照 → 演出许可证 → 法人身份 → 收款账户</td></tr>
+<tr><td><b>Q2</b></td><td>一证一号查重</td><td>D1</td><td class="mvp">必须</td><td>许可证号实时查重，重复拦截</td></tr>
+<tr><td><b>Q3</b></td><td>审核状态与驳回原因</td><td>D1</td><td class="mvp">必须</td><td>驳回必须写明原因和怎么改</td></tr>
+<tr><td><b>Q4</b></td><td>未过审全局置灰</td><td>D1</td><td class="mvp">必须</td><td>其余三个模块不可进入</td></tr>
+
+<tr><td><b>S1</b></td><td rowspan="8">售票</td><td>一键添票（选场次+区域）</td><td>—</td><td class="mvp">必须</td><td>关联平台场馆库，不可自由填</td></tr>
+<tr><td><b>S2</b></td><td>填数量 + 报价</td><td>A1</td><td class="mvp">必须</td><td>报价即结算价基数</td></tr>
+<tr><td><b>S3</b></td><td>预计到手金额 + 佣金明细</td><td>A1 A3</td><td class="mvp">必须</td><td>报价 × (1−佣金率)，点问号看构成</td></tr>
+<tr><td><b>S4</b></td><td>票源类型二选一</td><td>B1 B2</td><td class="mvp">必须</td><td>现票 / 承诺库存，决定后续表单与订单流程</td></tr>
+<tr><td><b>S5</b></td><td>现票：票号 + 凭证上传</td><td>B1 B3</td><td class="mvp">必须</td><td>票号进全库查重防一票多卖</td></tr>
+<tr><td><b>S6</b></td><td>承诺库存：交付时限（系统自算）</td><td>B2 E2</td><td class="mvp">必须</td><td>置灰不可改；<b>座位号输入框隐藏</b>（PRD 4.1）</td></tr>
+<tr><td><b>S7</b></td><td>选交付方式（五选一）</td><td>E1</td><td class="mvp">必须</td><td>决定"出票中"会持续多久</td></tr>
+<tr><td><b>S8</b></td><td>在售列表 + 改价</td><td>A2</td><td class="mvp">必须</td><td>仅未成交可改，已售入口不显示</td></tr>
+
+<tr><td><b>O1</b></td><td rowspan="6">订单</td><td>新订单提醒</td><td>—</td><td class="mvp">必须</td><td>含 30 分钟锁定期结果</td></tr>
+<tr><td><b>O2</b></td><td>待发货列表（按各自截止排序）</td><td>E2</td><td class="mvp">必须</td><td>每单截止时间不同（D 值不同）</td></tr>
+<tr><td><b>O3</b></td><td>交付凭证上传</td><td>E1</td><td class="mvp">必须</td><td>平台验真后才转交用户</td></tr>
+<tr><td><b>O4</b></td><td>「交不出票」申报 + 扣款预估</td><td>C1</td><td class="mvp">必须</td><td>任何时点可点，弹窗先算给他看</td></tr>
+<tr><td><b>O5</b></td><td>现场核销扫码</td><td>E1</td><td class="mvp">必须</td><td>线下交付场景</td></tr>
+<tr><td><b>O6</b></td><td>临期提醒（三节点）</td><td>E2</td><td class="mvp">必须</td><td>首次确认 / 预警 / 冻结新增</td></tr>
+
+<tr><td><b>M1</b></td><td rowspan="4">我的</td><td>保证金余额 + 充值提现</td><td>C1</td><td class="mvp">必须</td><td>余额不足则上票被拦</td></tr>
+<tr><td><b>M2</b></td><td>待结算 / 已到账 / 冻结中</td><td>A3</td><td class="mvp">必须</td><td>卖了多少钱、什么时候到账</td></tr>
+<tr><td><b>M3</b></td><td>结算记录</td><td>A3</td><td class="mvp">必须</td><td>演出后 T+5，扣固定佣金</td></tr>
+<tr><td><b>M4</b></td><td>资质信息与有效期</td><td>D1</td><td class="mvp">必须</td><td>双证到期提醒</td></tr>
+
+<tr><td><b>X1</b></td><td rowspan="3">砍掉 / 后置</td><td>进货模块（供求、集采）</td><td>—</td><td class="later">砍掉</td><td>见文末推理：与"自有票源"冲突</td></tr>
+<tr><td><b>X2</b></td><td>账户健康度仪表盘</td><td>—</td><td class="later">后置</td><td>四家二级票务竞品全都没做</td></tr>
+<tr><td><b>X3</b></td><td>批量上传 / 自动定价</td><td>—</td><td class="later">后置</td><td>行业走 FTP/POS 中间层，MVP 供应商少</td></tr>
+</table>
+
+<h2>二、价格规则（A1 A2 A3 的具体规定）</h2>
+<div class="note">这一块之前功能清单里漏了，补上。核心：报价即结算价，成交锁定。</div>
+<table>
+<tr><th style="width:24%">场景</th><th style="width:30%">规则</th><th>依据</th></tr>
+<tr><td>黄牛挂 3000，平台加服务费对外卖 3300</td><td>黄牛结算价 = 3000 − 佣金；平台赚服务费 + 佣金</td><td>StubHub/SeatGeek/Vivid 三家一致：卖家自主定价，payout 与买家实付解耦</td></tr>
+<tr><td><b>市场跌到 2500，平台主动降价到 2800 卖出</b></td><td><b>黄牛仍拿 3000 − 佣金。</b>平台自己让利自己承担</td><td>不是黄牛主动降价，平台不得转嫁</td></tr>
+<tr><td>黄牛想跟随市场降价</td><td>自己改挂牌价，<b>仅未成交的票可改</b></td><td>StubHub「any time before they sell」</td></tr>
+<tr><td>已成交订单</td><td>价格锁定，不可逆，双方都不能改</td><td>SeatGeek 条款明文禁止成交后取消</td></tr>
+<tr><td>佣金比例</td><td>固定比例，上票时即预览到手金额</td><td>Vivid Seats 官方 10%；StubHub/SeatGeek 约 10–15%</td></tr>
+<tr><td>结算时点</td><td>演出后 T+5（非出票即结算）</td><td>StubHub 演出后 5–8 个工作日</td></tr>
+</table>
+<div class="note" style="padding-left:0;margin-top:12px"><b>一句话</b>：黄牛拿固定结算价、成交即锁定；想跟市场降价就自己改未成交挂单；平台不吃差价也不补差价。谁定价谁承担波动。</div>
+
+<h2>三、交付时限公式</h2>
+<div class="note">锚点不是"平台需要多少反应时间"，而是<b>用户的钱什么时候退不回来</b>。</div>
+<div class="fml">
+最终交付截止 = <b>T − D − H − B</b><br>
+<span style="font-size:12.5px;color:#9a9aa6">纸质票再减物流时效 X</span>
+</div>
+<table>
+<tr><th style="width:10%">参数</th><th style="width:30%">含义</th><th>取值</th></tr>
+<tr><td><b>T</b></td><td>演出日</td><td>基准点</td></tr>
+<tr><td><b>D</b></td><td>入住日偏移</td><td><b>订单级变量</b>：当天入住 = 0，前一天入住 = 1</td></tr>
+<tr><td><b>H</b></td><td>酒店免费取消窗口</td><td>24h（香港主流）；不可退房型此公式失效</td></tr>
+<tr><td><b>B</b></td><td>通知响应缓冲</td><td><b>12h</b></td></tr>
+<tr><td><b>X</b></td><td>纸质票物流时效</td><td>按寄件地 × 快递方式配置</td></tr>
+</table>
+<div class="note" style="padding-left:0;margin-top:12px">
+三个提醒节点在此截止之前依次触发：<b>首次确认 → 预警 → 冻结该场新增</b>（间隔由平台补票所需时间决定）。<br>
+<b>同场次会有多个截止时间</b>——因 D 是订单级变量。建议按订单各自显示，不取全场最严值，避免无谓压缩黄牛搞票窗口。
+</div>
+
+<h2>四、全流程图</h2>
+
+<h3>模块 0 · 资质核验（一次性闸门）</h3>
+<div class="flow">
+  <div class="box act"><div class="t">手机号注册</div></div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">Q1</span>四步上传资质</div><div class="d">营业执照 → 演出许可证 → 法人身份 → 收款账户<br>每步存草稿，可中断续传</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t"><span class="id">Q2</span>闸门：一证一号查重 + 人工审核</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">通过</div>
+      <div class="box act"><div class="t"><span class="id">Q4</span>解锁售票 / 订单 / 我的</div></div>
+    </div>
+    <div class="br"><div class="brt">驳回</div>
+      <div class="box gate"><div class="t"><span class="id">Q3</span>显示原因 + 怎么改</div></div>
+    </div>
+  </div>
+</div>
+
+<h3>模块 1 · 售票（上票流程）</h3>
+<div class="flow">
+  <div class="box act"><div class="t"><span class="id">S1</span>一键添票：选场次 → 选区域座位</div><div class="d">关联平台场馆库</div></div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">S2 S3</span>填数量 + 报价</div><div class="d">实时显示「预计到手 = 报价 × (1−佣金率)」</div></div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">S4</span>★ 选票源类型（决定后续一切）</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">现票（票已在手）</div>
+      <div class="box act"><div class="t"><span class="id">S5</span>填票号 + 传票面凭证</div><div class="d">票号进全库查重<br>平台此时即验真并托管</div></div>
+    </div>
+    <div class="br"><div class="brt">承诺库存（票还没搞到）</div>
+      <div class="box act"><div class="t"><span class="id">S6</span>传购票凭证</div><div class="d">交付时限 = T−D−H−B，系统自算、置灰<br><b>座位号输入框隐藏</b><br>新供应商不可选此项</div></div>
+    </div>
+  </div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">S7</span>选交付方式（五选一）</div><div class="d">纸质票 / 官方电子票转赠 / 二维码条码 / 第三方链接 / 香港现场取票<br><b>此选择决定"出票中"会持续多久</b></div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">提交前校验</div><div class="d">保证金余额 · 票号查重 · 承诺库存等级<br>不通过则按钮置灰 + 提示缺哪项</div></div>
+  <div class="arw lbl" data-l="提交"></div>
+  <div class="box act"><div class="t">待审核</div><div class="d">黄牛不能自行上架定价</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">平台审核</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">通过</div>
+      <div class="box cend"><div class="t">★ 联动 1：SKU 上架可购</div><div class="d">现票标「现票」，承诺库存标「担保出票 + 预计出票时间」</div></div>
+    </div>
+    <div class="br"><div class="brt">驳回</div>
+      <div class="box gate"><div class="t">消息通知 + 原因</div></div>
+    </div>
+  </div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">S8</span>在售列表：可改价</div><div class="d">仅未成交可改</div></div>
+</div>
+
+<h3>模块 2 · 订单（履约流程）</h3>
+<div class="note">现票和承诺库存走不同路径——这是两条独立的时间轴。</div>
+<div class="flow">
+  <div class="box cend"><div class="t">C 端用户进入支付</div><div class="d"><b>同时锁票 + 锁酒店，30 分钟锁定期</b><br>超时自动释放，原子操作防重复销售</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">30 分钟内付款</div>
+      <div class="box act"><div class="t"><span class="id">O1</span>收到新订单</div></div>
+    </div>
+    <div class="br"><div class="brt">超时未付</div>
+      <div class="box gate"><div class="t">库存自动释放</div><div class="d">票回到在售状态</div></div>
+    </div>
+  </div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">O2</span>待发货列表</div><div class="d">按各自交付截止排序（每单不同，因 D 值不同）</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">按票源类型分两条路</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">现票路径</div>
+      <div class="box act"><div class="t"><span class="id">O3</span>平台已托管，直接转交</div><div class="d">电子票：几分钟内完成<br>纸质票：等物流 X</div></div>
+      <div class="arw"></div>
+      <div class="box cend"><div class="t">★ 联动 2：已出票</div><div class="d">「出票中」极短</div></div>
+    </div>
+    <div class="br"><div class="brt">承诺库存路径</div>
+      <div class="box cend"><div class="t">C 端显示：出票中</div><div class="d"><b>这是真正的等待期</b><br>持续到黄牛搞到票，最长到交付截止</div></div>
+      <div class="arw"></div>
+      <div class="box act"><div class="t"><span class="id">O6</span>三次临期提醒</div><div class="d">首次确认 → 预警 → 冻结该场新增</div></div>
+      <div class="arw"></div>
+      <div class="split">
+        <div class="br"><div class="brt">搞到票了</div>
+          <div class="box act"><div class="t"><span class="id">O3</span>上传交付凭证</div><div class="d">PRD：仅传票面截图不等于完成交票</div></div>
+          <div class="arw"></div>
+          <div class="box gate"><div class="t">平台验真</div></div>
+          <div class="arw"></div>
+          <div class="box cend"><div class="t">★ 联动 2：已出票</div></div>
+        </div>
+        <div class="br"><div class="brt">交不出票</div>
+          <div class="box act"><div class="t"><span class="id">O4</span>申报「交不出票」</div><div class="d"><b>任何时点都可点</b>：<br>刚下单就知道搞不到 → 早点说，平台补票时间充裕<br>拖到截止才说 → 扣款更重</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">O5</span>现场核销扫码</div><div class="d">用户入场时</div></div>
+  <div class="arw"></div>
+  <div class="box cend"><div class="t">★ 联动 3：已完成</div></div>
+</div>
+
+<h3>异常分支 · 交不出票</h3>
+<div class="flow">
+  <div class="box act"><div class="t"><span class="id">O4</span>点「交不出票」</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">弹窗：预计扣款 X 元</div><div class="d">后台算好的数字，商家端只见结果<br>确认后才能提交</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">平台启动补票</div></div>
+  <div class="arw"></div>
+  <div class="split">
+    <div class="br"><div class="brt">补到同档或升档</div>
+      <div class="box cend"><div class="t">★ 联动 4a：座位调整待确认</div><div class="d">用户确认后转已出票</div></div>
+    </div>
+    <div class="br"><div class="brt">补不到</div>
+      <div class="box cend"><div class="t">★ 联动 4b：退款 + 赔付</div></div>
+    </div>
+  </div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">从保证金扣款</div><div class="d">逐张判罚：挂 5 交 2，未交 3 张各自独立计算</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t">累犯 → 拉黑清退</div></div>
+</div>
+
+<h3>模块 3 · 我的（与 C 端无联动）</h3>
+<div class="flow">
+  <div class="box act"><div class="t"><span class="id">M1</span>保证金余额 · 充值提现</div><div class="d">余额不足时上票会被拦住</div></div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">M2</span>待结算 / 已到账 / 冻结中</div></div>
+  <div class="arw"></div>
+  <div class="box gate"><div class="t"><span class="id">M3</span>演出后 5 天统一结算（T+5）</div><div class="d">扣固定佣金 → 打款 → 释放保证金</div></div>
+  <div class="arw"></div>
+  <div class="box act"><div class="t"><span class="id">M4</span>资质信息与有效期</div></div>
+</div>
+
+<h2>五、状态对应表（含 C 端联动点）</h2>
+<table>
+<tr><th style="width:6%">联动</th><th style="width:26%">黄牛端</th><th style="width:26%">C 端用户看到</th><th>说明</th></tr>
+<tr><td></td><td>待审核</td><td><span class="tag tg-n">不可见</span></td><td>SKU 未上架</td></tr>
+<tr><td><b>★1</b></td><td>已上架</td><td><span class="tag tg-c">可购买</span></td><td>现票标「现票」；承诺库存标「担保出票 + 预计出票时间」，不得显示座位号</td></tr>
+<tr><td></td><td>已锁定</td><td><span class="tag tg-c">待付款</span></td><td>30 分钟锁定期</td></tr>
+<tr><td></td><td>已售 · 待发货</td><td><span class="tag tg-c">资源确认中</span> → <span class="tag tg-c">套餐已确认</span> → <span class="tag tg-c">出票中</span></td><td>现票的「出票中」极短；承诺库存的「出票中」是真正等待期</td></tr>
+<tr><td></td><td>已交付 · 待验真</td><td><span class="tag tg-c">出票中</span></td><td>用户不区分平台内部验票</td></tr>
+<tr><td><b>★2</b></td><td>已验真</td><td><span class="tag tg-c">已出票</span></td><td>凭证对用户可见</td></tr>
+<tr><td><b>★3</b></td><td>已核销</td><td><span class="tag tg-c">已完成</span></td><td>用户已入场</td></tr>
+<tr><td><b>★4a</b></td><td>违约 · 补票中</td><td><span class="tag tg-c">座位调整待确认</span></td><td>需用户确认新座位</td></tr>
+<tr><td><b>★4b</b></td><td>违约 · 已赔付</td><td><span class="tag tg-c">已退款</span></td><td>退款 + 赔付到账</td></tr>
+</table>
+<div class="note" style="padding-left:0;margin-top:12px"><b>对 C 端无影响的动作</b>：改未售出票的价格、充值保证金、查看结算记录、上传资质。</div>
+
+<h2>附录 · 赔付规则（后台计算，商家端只见结果）</h2>
+<div class="note">这些是结算逻辑，不在商家端界面展示。黄牛只在「交不出票」弹窗里看到一个算好的数字。</div>
+<table>
+<tr><th style="width:26%">项目</th><th style="width:32%">规则</th><th>来源</th></tr>
+<tr><td>用户票款赔付</td><td>距开演 >96h：退全款 + 赔票款 40%<br>≤96h：退全款 + 赔 100%（退一赔一）<br>假票：假一赔三</td><td>摩天轮 / 票牛一致</td></tr>
+<tr><td>现场无法入场</td><td>门票全退 + 未使用服务全退 + <b>500 元/张，单笔上限 2000 元</b></td><td>PRD 7.3，验收标准第 10 条</td></tr>
+<tr><td>扣黄牛的钱</td><td>补票实际成本 + 票款赔付 + 酒店损失（封顶 C）<br><b>逐张计罚</b>，不按整单作废</td><td>StubHub 模式：追偿补票成本而非按比例</td></tr>
+<tr><td>C 的取值</td><td>建议 1000 元/单 = 典型酒店单晚 800 × 1.25</td><td>⚠️ 行业值为 0（StubHub 协议免责 consequential damages），但强制打包下不能照抄</td></tr>
+<tr><td>扣款顺序</td><td>保证金 → 冻结待结货款 → 追偿账户 → 清退拉黑</td><td>摩天轮处置链</td></tr>
+<tr><td>保证金</td><td>(2000 + C) × 允许同时在售单数</td><td>由赔付上限反推</td></tr>
+</table>
+
+<h2>关于「进货」模块为什么砍掉</h2>
+<div class="note" style="max-width:920px;line-height:1.9;padding-left:0">
+卖家宝有供求板块，是因为它的商家生态存在「A 票多卖不掉、B 缺票有客源」的互通需求。<br><br>
+但 SureTix 自己有票源，「进货」的含义只能是<b>平台把自有票批发给黄牛卖</b>——这就要先回答：平台有票，为什么不直接卖给用户，要让黄牛赚一层？<br><br>
+只有一种情况说得通：<b>平台有票但缺流量，黄牛有客源</b>。而 MVP 做的是票+酒店打包、用户从自己 C 端来，这个假设不成立。<br><br>
+<b>M2 再评估</b>，触发条件是确实出现「平台有票卖不掉，而某些黄牛有客源」。
+</div>
+</div>
+</body>
+</html>
